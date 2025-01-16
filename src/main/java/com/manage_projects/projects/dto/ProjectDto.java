@@ -13,6 +13,7 @@ public class ProjectDto {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private String project_manager_id;
+    private String project_manager;
     private String priority;
     private String client_id;
     private String attachments;
@@ -20,6 +21,7 @@ public class ProjectDto {
     private LocalDateTime completed_at;
     private String progress;
     private String privacy;
+    private byte[] file;
     private List<String> userIds; 
 
     public ProjectDto() {
@@ -28,9 +30,9 @@ public class ProjectDto {
 
     public ProjectDto(String projectid, String projectname, String projectdescription, LocalDateTime start_date,
                       LocalDateTime end_date, String status, LocalDateTime created_at, LocalDateTime updated_at,
-                      String project_manager_id, String priority, String client_id, String attachments,
+                      String project_manager,String project_manager_id, String priority, String client_id, String attachments,
                       Boolean is_archived, LocalDateTime completed_at, String progress, String privacy,
-                      List<String> userIds) { 
+                      byte[] file, List<String> userIds) { 
         super();
         this.projectid = projectid;
         this.projectname = projectname;
@@ -40,6 +42,7 @@ public class ProjectDto {
         this.status = status;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.project_manager = project_manager;
         this.project_manager_id = project_manager_id;
         this.priority = priority;
         this.client_id = client_id;
@@ -48,6 +51,7 @@ public class ProjectDto {
         this.completed_at = completed_at;
         this.privacy = privacy;
         this.progress = progress;
+        this.file = file;
         this.userIds = userIds; 
     
     }
@@ -116,12 +120,12 @@ public class ProjectDto {
         this.updated_at = updated_at;
     }
 
-    public String getProject_manager_id() {
-        return project_manager_id;
+    public String getproject_manager() {
+        return project_manager;
     }
 
-    public void setProject_manager_id(String project_manager_id) {
-        this.project_manager_id = project_manager_id;
+    public void setproject_manager(String project_manager) {
+        this.project_manager = project_manager;
     }
 
     public String getPriority() {
@@ -187,4 +191,23 @@ public class ProjectDto {
     public void setUserIds(List<String> userIds) { 
         this.userIds = userIds;
     }
+
+
+	public byte[] getFile() {
+		return file;
+	}
+
+	public void setFile(byte[] file) {
+		this.file = file;
+	}
+
+	public String getProject_manager_id() {
+		return project_manager_id;
+	}
+
+	public void setProject_manager_id(String project_manager_id) {
+		this.project_manager_id = project_manager_id;
+	}
+	
+    
 }

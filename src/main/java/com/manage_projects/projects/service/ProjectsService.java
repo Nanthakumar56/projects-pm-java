@@ -8,10 +8,13 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.manage_projects.projects.dto.ProjectDto;
+import com.manage_projects.projects.dto.UserResponse;
 import com.manage_projects.projects.entity.Members;
 import com.manage_projects.projects.entity.MembersId;
 import com.manage_projects.projects.entity.Projects;
@@ -40,7 +43,7 @@ public class ProjectsService {
 	    project.setCreated_at(LocalDateTime.now());
 	    project.setPrivacy(projectDTO.getPrivacy());
 	    project.setPriority(projectDTO.getPriority());
-	    project.setProject_manager_id(projectDTO.getProject_manager_id());
+	    project.setProject_manager_id(projectDTO.getproject_manager());
 	    project.setClient_id(projectDTO.getClient_id());
 	    project.setProgress("0");
 	    project.setAttachments(null);
@@ -54,37 +57,56 @@ public class ProjectsService {
 		return savedProject;
 	}
 	
-	public List<ProjectDto> getAllProjects()
-	{
+
+	public List<ProjectDto> getAllProjects() {
 	    List<Projects> projectList = projectsRepo.findAll();
 	    List<ProjectDto> projectDTOList = new ArrayList<>();
-		
-	    for(Projects project: projectList)
-	    {
-	    	ProjectDto projectdto = new ProjectDto();
-		    projectdto.setProjectid(project.getProjectid());
-	    	projectdto.setProjectname(project.getProjectname());
-	    	projectdto.setProjectdescription(project.getProjectdescription());
-		    projectdto.setStart_date(project.getStart_date());
-		    projectdto.setEnd_date(project.getEnd_date());
-		    projectdto.setCompleted_at(project.getCompleted_at());
-		    projectdto.setStatus(project.getStatus());
-		    projectdto.setCreated_at(project.getCreated_at());
-		    projectdto.setUpdated_at(project.getUpdated_at());
-		    projectdto.setPriority(project.getPriority());
-		    projectdto.setProject_manager_id(project.getProject_manager_id());
-		    projectdto.setClient_id(project.getClient_id());
-		    projectdto.setProgress(project.getProgress());
-		    projectdto.setAttachments(project.getAttachments());
-		    projectdto.setIs_archived(project.getIs_archived());
-		    
-		    List<String> userIds = membersRepo.findUserIdsByProjectId(project.getProjectid());
+	    
+	    RestTemplate restTemplate = new RestTemplate();
+	    
+	    for (Projects project : projectList) {
+	        ProjectDto projectdto = new ProjectDto();
+	        projectdto.setProjectid(project.getProjectid());
+	        projectdto.setProjectname(project.getProjectname());
+	        projectdto.setProjectdescription(project.getProjectdescription());
+	        projectdto.setStart_date(project.getStart_date());
+	        projectdto.setEnd_date(project.getEnd_date());
+	        projectdto.setCompleted_at(project.getCompleted_at());
+	        projectdto.setStatus(project.getStatus());
+	        projectdto.setCreated_at(project.getCreated_at());
+	        projectdto.setUpdated_at(project.getUpdated_at());
+	        projectdto.setPriority(project.getPriority());
+	        projectdto.setProject_manager_id(project.getProject_manager_id());
+	        projectdto.setClient_id(project.getClient_id());
+	        projectdto.setProgress(project.getProgress());
+	        projectdto.setAttachments(project.getAttachments());
+	        projectdto.setIs_archived(project.getIs_archived());
+	        
+	        String projectManagerId = project.getProject_manager_id();
+	        String url = "http://localhost:5656/users/getName?userId=" + projectManagerId;
+
+	        try {
+	            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+	            if (response.getStatusCode().is2xxSuccessful()) {
+	                String projectManagerName = response.getBody();
+	                projectdto.setproject_manager(projectManagerName);  
+	            } else {
+	                projectdto.setproject_manager("Unknown");  
+	            }
+	        } catch (Exception e) {
+	            projectdto.setproject_manager("Unknown");
+	        }
+
+	        List<String> userIds = membersRepo.findUserIdsByProjectId(project.getProjectid());
 	        projectdto.setUserIds(userIds);
 
-		    projectDTOList.add(projectdto);
+	        projectDTOList.add(projectdto);
 	    }
+	    
 	    return projectDTOList;
 	}
+
+
 	public ProjectDto getProject(String projectid) {
 	    Optional<Projects> project = projectsRepo.findById(projectid);
 	    ProjectDto projectdto = new ProjectDto();
@@ -107,13 +129,37 @@ public class ProjectsService {
 	        projectdto.setAttachments(actualProject.getAttachments());
 	        projectdto.setIs_archived(actualProject.getIs_archived());
 	        
+	        String projectManagerId = actualProject.getProject_manager_id();
+	        
+	        RestTemplate restTemplate = new RestTemplate();
+	        String url = "http://localhost:5656/users/getUser?userId=" + projectManagerId;
+	        
+	        try {
+	            ResponseEntity<UserResponse> response = restTemplate.getForEntity(url, UserResponse.class);
+	            UserResponse user = response.getBody();
+	            
+	            if (user != null) {
+	                String fullName = user.getFirst_name();
+	                if (user.getLast_name() != null && !user.getLast_name().isEmpty()) {
+	                    fullName += " " + user.getLast_name();
+	                }
+	                projectdto.setproject_manager(fullName); 
+
+	                projectdto.setFile(user.getFile());  
+	            }
+	        } catch (Exception e) {
+	            System.err.println("Error fetching project manager details: " + e.getMessage());
+	            projectdto.setproject_manager("Unknown");
+	        }
+	        
 	        List<String> userIds = membersRepo.findUserIdsByProjectId(actualProject.getProjectid());
 	        projectdto.setUserIds(userIds);
-	        
 	    }
 
 	    return projectdto;
 	}
+
+	
 	public boolean updateProject(ProjectDto projectdto) {
 	    try {
 	        return projectsRepo.findById(projectdto.getProjectid())
@@ -141,8 +187,8 @@ public class ProjectsService {
 	                if (projectdto.getPriority() != null) {
 	                    existProject.setPriority(projectdto.getPriority());
 	                }
-	                if (projectdto.getProject_manager_id() != null) {
-	                    existProject.setProject_manager_id(projectdto.getProject_manager_id());
+	                if (projectdto.getproject_manager() != null) {
+	                    existProject.setProject_manager_id(projectdto.getproject_manager());
 	                }
 	                if (projectdto.getClient_id() != null) {
 	                    existProject.setClient_id(projectdto.getClient_id());

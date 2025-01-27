@@ -24,12 +24,14 @@ public class MileStones {
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 	private int step;
+	private String reason;
+	
 	public MileStones() {
 		super();
 	}
 	public MileStones(String milestoneid, String name, String description, LocalDateTime start_date,
 			LocalDateTime target_date, String projectid, String status, LocalDateTime created_at,
-			LocalDateTime updated_at, int step) {
+			LocalDateTime updated_at, int step, String reason) {
 		super();
 		this.milestoneid = milestoneid;
 		this.name = name;
@@ -41,6 +43,13 @@ public class MileStones {
 		this.created_at = created_at;
 		this.updated_at = updated_at;
 		this.step = step;
+		this.reason = reason;
+				}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 	public String getMilestoneid() {
 		return milestoneid;

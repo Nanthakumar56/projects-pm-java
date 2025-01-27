@@ -231,12 +231,6 @@ public class ProjectsService {
 	    }
 	}
 	
-	public Members createMember(String projectid, String userid) {
-	        MembersId membersId = new MembersId(projectid, userid);
-	        Members member = new Members(membersId); 
-	        return membersRepo.save(member); 
-	}
-	
 	@Transactional
 	public boolean deleteProject(String projectid) {
 	    try {
@@ -254,4 +248,29 @@ public class ProjectsService {
 	        return false;
 	    }
 	}
+	
+	public Members createMember(String projectid, String userid) {
+        MembersId membersId = new MembersId(projectid, userid);
+        Members member = new Members(membersId); 
+        return membersRepo.save(member); 
+}
+    // Bulk add members to a project
+    public void bulkAddMembers(List<Members> members) {
+    	membersRepo.saveAll(members);
+    }
+
+    // Remove a single member from a project
+    public void removeMember(MembersId membersId) {
+    	membersRepo.deleteById(membersId);
+    }
+
+    // Get all userIds by projectId
+    public List<String> getUserIdsByProjectId(String projectid) {
+        return membersRepo.findUserIdsByProjectId(projectid);
+    }
+
+    // Remove all members from a project
+    public void removeAllMembersByProjectId(String projectid) {
+    	membersRepo.deleteByProjectId(projectid);
+    }
 }

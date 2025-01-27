@@ -14,7 +14,6 @@ public class ProjectNotes {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private String notesid;
-	private String name;
 	private String tag;
 	private String keypoints;
 	private String projectid;
@@ -25,11 +24,10 @@ public class ProjectNotes {
 		super();
 	}
 	
-	public ProjectNotes(String notesid, String name, String tag, String keypoints, String projectid,
+	public ProjectNotes(String notesid, String tag, String keypoints, String projectid,
 			LocalDateTime created_at, LocalDateTime updated_at) {
 		super();
 		this.notesid = notesid;
-		this.name = name;
 		this.tag = tag;
 		this.keypoints = keypoints;
 		this.projectid = projectid;
@@ -43,12 +41,7 @@ public class ProjectNotes {
 	public void setNotesid(String notesid) {
 		this.notesid = notesid;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public String getTag() {
 		return tag;
 	}

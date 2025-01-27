@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manage_projects.projects.dto.ProjectDto;
+import com.manage_projects.projects.entity.Members;
+import com.manage_projects.projects.entity.MembersId;
 import com.manage_projects.projects.entity.Projects;
 import com.manage_projects.projects.service.ProjectsService;
 
@@ -77,6 +79,32 @@ public class ProjectsController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to delete project or project not found");
 	    }
 	}
+	@PostMapping("/bulk-add")
+    public ResponseEntity<String> bulkAddMembers(@RequestBody List<Members> members) {
+        projectService.bulkAddMembers(members);
+        return ResponseEntity.ok("Members added successfully.");
+    }
 
+    // Endpoint to remove a single member
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeMember(@RequestParam String projectid, @RequestParam String userid) {
+        MembersId membersId = new MembersId(projectid, userid);
+        projectService.removeMember(membersId);
+        return ResponseEntity.ok("Member removed successfully.");
+    }
+
+    // Endpoint to get all userIds by projectId
+    @GetMapping("/users")
+    public ResponseEntity<List<String>> getUserIdsByProjectId(@RequestParam String projectid) {
+        List<String> userIds = projectService.getUserIdsByProjectId(projectid);
+        return ResponseEntity.ok(userIds);
+    }
+
+    // Endpoint to remove all members from a project
+    @DeleteMapping("/remove-all")
+    public ResponseEntity<String> removeAllMembersByProjectId(@RequestParam String projectid) {
+        projectService.removeAllMembersByProjectId(projectid);
+        return ResponseEntity.ok("All members removed from the project.");
+    }
 
 }

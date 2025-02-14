@@ -18,7 +18,7 @@ public class MilestoneServie {
     @Autowired
     private MileStoneRepository milestoneRepo;
     
-    public String createMileStones(List<MileStones> milestones) {
+    public String createMileStones(String projectid,List<MileStones> milestones) {
         if (milestones == null || milestones.isEmpty()) {
             return "No milestones to create.";
         }
@@ -28,12 +28,8 @@ public class MilestoneServie {
                 if (milestone.getMilestoneid() == null) {
                     milestone.setMilestoneid(UUID.randomUUID().toString());
                 }
+                milestone.setProjectid(projectid);
                 milestone.setCreated_at(LocalDateTime.now());
-
-                // Ensure project ID is set from the milestone object itself
-                if (milestone.getProjectid() == null) {
-                    return "Project ID must be provided in the milestone.";
-                }
 
                 milestoneRepo.save(milestone);
             }

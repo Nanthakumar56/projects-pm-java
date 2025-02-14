@@ -1,9 +1,11 @@
 package com.manage_projects.projects.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.manage_projects.projects.dto.NewProjectDto;
 import com.manage_projects.projects.dto.ProjectDto;
+import com.manage_projects.projects.dto.ProjectMembersDto;
 import com.manage_projects.projects.entity.Members;
 import com.manage_projects.projects.entity.MembersId;
 import com.manage_projects.projects.entity.Projects;
@@ -27,7 +31,7 @@ public class ProjectsController {
 	private ProjectsService projectService;
 	
 	@PostMapping("/createProject")
-	public ResponseEntity<?> createProject (@RequestBody ProjectDto projectDTO)
+	public ResponseEntity<?> createProject (@RequestBody NewProjectDto projectDTO)
 	{
 		try {
             Projects savedProject = projectService.createProject(projectDTO);
@@ -50,14 +54,15 @@ public class ProjectsController {
 	{
 		ProjectDto projectDTO = projectService.getProject(projectId);
         if (projectDTO != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(projectDTO);
+        	return ResponseEntity.status(HttpStatus.OK)
+        	        .body(projectDTO);
         } else {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-	}
+	} 
 	
 	@PutMapping("/update")
-	public ResponseEntity<?> updateProject(@RequestBody ProjectDto projectdto)
+	public ResponseEntity<?> updateProject(@RequestBody NewProjectDto projectdto)
 	{
 		boolean response = projectService.updateProject(projectdto);
 		
@@ -85,7 +90,6 @@ public class ProjectsController {
         return ResponseEntity.ok("Members added successfully.");
     }
 
-    // Endpoint to remove a single member
     @DeleteMapping("/remove")
     public ResponseEntity<String> removeMember(@RequestParam String projectid, @RequestParam String userid) {
         MembersId membersId = new MembersId(projectid, userid);
@@ -93,18 +97,27 @@ public class ProjectsController {
         return ResponseEntity.ok("Member removed successfully.");
     }
 
-    // Endpoint to get all userIds by projectId
     @GetMapping("/users")
     public ResponseEntity<List<String>> getUserIdsByProjectId(@RequestParam String projectid) {
         List<String> userIds = projectService.getUserIdsByProjectId(projectid);
         return ResponseEntity.ok(userIds);
     }
 
-    // Endpoint to remove all members from a project
     @DeleteMapping("/remove-all")
     public ResponseEntity<String> removeAllMembersByProjectId(@RequestParam String projectid) {
         projectService.removeAllMembersByProjectId(projectid);
         return ResponseEntity.ok("All members removed from the project.");
     }
-
+    
+    @PostMapping("/update-members")
+    public ResponseEntity<?> updateProjectMembers(@RequestParam String projectid, @RequestBody ProjectMembersDto members) {
+       try {
+    	   projectService.updateProjectMembers(projectid, members);
+           return ResponseEntity.ok(Collections.singletonMap("message", "Project members updated successfully"));
+       }
+       catch(Exception e)
+       {
+    	   return ResponseEntity.badRequest().body("Error creating members");
+       }
+    }
 }

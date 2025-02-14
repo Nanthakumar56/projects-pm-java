@@ -11,13 +11,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                .allowedOriginPatterns("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
-                        .allowedHeaders("*"); 
-            }
+        	@Override
+        	public void addCorsMappings(CorsRegistry registry) {
+        	    registry.addMapping("/**")
+        	            .allowedOriginPatterns("*") // Allows all origins in Spring 5+ (or use allowedOrigins("*") for older versions)
+        	            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        	            .allowedHeaders("*");  // Allows all headers
+        	}
+
         };
     }
 }

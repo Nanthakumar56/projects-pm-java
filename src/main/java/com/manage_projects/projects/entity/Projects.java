@@ -22,12 +22,14 @@ public class Projects {
 	private LocalDateTime updated_at;
 	private String project_manager_id;
 	private String priority;
-	private String client_id;
-	private String attachments;
+	private String task_approver;
+	private String pjtmain_id;
 	private Boolean is_archived;
+	private LocalDateTime started_on;
 	private LocalDateTime completed_at;
-	private String progress;
+	private String type;
 	private String privacy;
+	private String reason;
 	
 	public Projects() {
 		super();
@@ -35,8 +37,8 @@ public class Projects {
 
 	public Projects(String projectid, String projectname, String projectdescription, LocalDateTime start_date,
 			LocalDateTime end_date, String status, LocalDateTime created_at, LocalDateTime updated_at,
-			String project_manager_id, String priority, String client_id, String attachments,
-			Boolean is_archived, LocalDateTime completed_at, String progress , String privacy) {
+			String project_manager_id, String priority, String task_approver, String pjtmain_id, Boolean is_archived,
+			LocalDateTime started_on, LocalDateTime completed_at, String type, String privacy, String reason) {
 		super();
 		this.projectid = projectid;
 		this.projectname = projectname;
@@ -48,12 +50,14 @@ public class Projects {
 		this.updated_at = updated_at;
 		this.project_manager_id = project_manager_id;
 		this.priority = priority;
-		this.client_id = client_id;
-		this.attachments = attachments;
+		this.task_approver = task_approver;
+		this.pjtmain_id = pjtmain_id;
 		this.is_archived = is_archived;
+		this.started_on = started_on;
 		this.completed_at = completed_at;
-		this.progress = progress;
+		this.type = type;
 		this.privacy = privacy;
+		this.reason = reason;
 	}
 
 	public String getProjectid() {
@@ -136,22 +140,6 @@ public class Projects {
 		this.priority = priority;
 	}
 
-	public String getClient_id() {
-		return client_id;
-	}
-
-	public void setClient_id(String client_id) {
-		this.client_id = client_id;
-	}
-
-	public String getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(String attachments) {
-		this.attachments = attachments;
-	}
-
 	public Boolean getIs_archived() {
 		return is_archived;
 	}
@@ -168,12 +156,12 @@ public class Projects {
 		this.completed_at = completed_at;
 	}
 
-	public String getProgress() {
-		return progress;
+	public String getType() {
+		return type;
 	}
 
-	public void setProgress(String progress) {
-		this.progress = progress;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getPrivacy() {
@@ -182,6 +170,38 @@ public class Projects {
 
 	public void setPrivacy(String privacy) {
 		this.privacy = privacy;
+	}
+
+	public String getTask_approver() {
+		return task_approver;
+	}
+
+	public void setTask_approver(String task_approver) {
+		this.task_approver = task_approver;
+	}
+
+	public String getPjtmain_id() {
+		return pjtmain_id;
+	}
+
+	public void setPjtmain_id(String pjtmain_id) {
+		this.pjtmain_id = pjtmain_id;
+	}
+
+	public LocalDateTime getStarted_on() {
+		return started_on;
+	}
+
+	public void setStarted_on(LocalDateTime started_on) {
+		this.started_on = started_on;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 	
 }

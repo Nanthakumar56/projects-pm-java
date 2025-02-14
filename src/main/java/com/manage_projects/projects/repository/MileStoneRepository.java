@@ -35,4 +35,7 @@ public interface MileStoneRepository extends CrudRepository<MileStones, String> 
 
     void deleteById(String milestoneid);
 
+    @Modifying
+    @Query("DELETE FROM MileStones m WHERE m.projectid = :projectId")
+    void deleteByProjectId(@Param("projectId") String projectId);
 }

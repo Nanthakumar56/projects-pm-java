@@ -27,12 +27,12 @@ public class MilstoneController {
 	private MilestoneServie milestoneService;
 	
 	@PostMapping("/createMilestone")
-	public ResponseEntity<?> createMilestone(@RequestBody List<MileStones> milestones)
+	public ResponseEntity<?> createMilestone(@RequestParam String projectid,@RequestBody List<MileStones> milestones)
 	{
 		try {
 			if(!milestones.isEmpty())
 			{
-				String response = milestoneService.createMileStones(milestones);
+				String response = milestoneService.createMileStones(projectid,milestones);
 				
 			     return ResponseEntity.status(HttpStatus.OK).body(response); 
 			}

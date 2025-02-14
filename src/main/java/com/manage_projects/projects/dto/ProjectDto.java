@@ -15,48 +15,63 @@ public class ProjectDto {
     private String project_manager_id;
     private String project_manager;
     private String priority;
-    private String client_id;
-    private String attachments;
+    private String task_approver;
+    private String approver_name;
+    private String pjtmain_id;
     private Boolean is_archived;
     private LocalDateTime completed_at;
+    private LocalDateTime started_on;
     private String progress;
+    private String reason;
     private String privacy;
-    private byte[] file;
+    private byte[] managerFile;
+    private byte[] approverFile;
     private List<String> userIds; 
-
+    private String totaltasks;
+    private String closedtasks;
+    private String pendingtasks;
+    
     public ProjectDto() {
         super();
     }
 
-    public ProjectDto(String projectid, String projectname, String projectdescription, LocalDateTime start_date,
-                      LocalDateTime end_date, String status, LocalDateTime created_at, LocalDateTime updated_at,
-                      String project_manager,String project_manager_id, String priority, String client_id, String attachments,
-                      Boolean is_archived, LocalDateTime completed_at, String progress, String privacy,
-                      byte[] file, List<String> userIds) { 
-        super();
-        this.projectid = projectid;
-        this.projectname = projectname;
-        this.projectdescription = projectdescription;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.project_manager = project_manager;
-        this.project_manager_id = project_manager_id;
-        this.priority = priority;
-        this.client_id = client_id;
-        this.attachments = attachments;
-        this.is_archived = is_archived;
-        this.completed_at = completed_at;
-        this.privacy = privacy;
-        this.progress = progress;
-        this.file = file;
-        this.userIds = userIds; 
-    
-    }
+	public ProjectDto(String projectid, String projectname, String projectdescription, LocalDateTime start_date,
+			LocalDateTime end_date, String status, LocalDateTime created_at, LocalDateTime updated_at,
+			String project_manager_id, String project_manager, String priority, String task_approver,
+			String approver_name, String pjtmain_id, Boolean is_archived, LocalDateTime completed_at,
+			LocalDateTime started_on, String progress,String reason, String privacy, byte[] managerFile, byte[] approverFile,
+			List<String> userIds, String totaltasks, String closedtasks, String pendingtasks) {
+		super();
+		this.projectid = projectid;
+		this.projectname = projectname;
+		this.projectdescription = projectdescription;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.status = status;
+		this.created_at = created_at;
+		this.updated_at = updated_at;
+		this.project_manager_id = project_manager_id;
+		this.project_manager = project_manager;
+		this.priority = priority;
+		this.task_approver = task_approver;
+		this.approver_name = approver_name;
+		this.pjtmain_id = pjtmain_id;
+		this.is_archived = is_archived;
+		this.completed_at = completed_at;
+		this.started_on = started_on;
+		this.progress = progress;
+		this.reason = reason;
+		this.privacy = privacy;
+		this.managerFile = managerFile;
+		this.approverFile = approverFile;
+		this.userIds = userIds;
+		this.totaltasks = totaltasks;
+		this.closedtasks = closedtasks;
+		this.pendingtasks = pendingtasks;
+	}
 
-    public String getProjectid() {
+
+	public String getProjectid() {
         return projectid;
     }
 
@@ -120,36 +135,12 @@ public class ProjectDto {
         this.updated_at = updated_at;
     }
 
-    public String getproject_manager() {
-        return project_manager;
-    }
-
-    public void setproject_manager(String project_manager) {
-        this.project_manager = project_manager;
-    }
-
     public String getPriority() {
         return priority;
     }
 
     public void setPriority(String priority) {
         this.priority = priority;
-    }
-
-    public String getClient_id() {
-        return client_id;
-    }
-
-    public void setClient_id(String client_id) {
-        this.client_id = client_id;
-    }
-
-    public String getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(String attachments) {
-        this.attachments = attachments;
     }
 
     public Boolean getIs_archived() {
@@ -192,15 +183,6 @@ public class ProjectDto {
         this.userIds = userIds;
     }
 
-
-	public byte[] getFile() {
-		return file;
-	}
-
-	public void setFile(byte[] file) {
-		this.file = file;
-	}
-
 	public String getProject_manager_id() {
 		return project_manager_id;
 	}
@@ -208,6 +190,93 @@ public class ProjectDto {
 	public void setProject_manager_id(String project_manager_id) {
 		this.project_manager_id = project_manager_id;
 	}
+
+	public String getProject_manager() {
+		return project_manager;
+	}
+
+	public void setProject_manager(String project_manager) {
+		this.project_manager = project_manager;
+	}
+
+	public String getTask_approver() {
+		return task_approver;
+	}
+
+	public void setTask_approver(String task_approver) {
+		this.task_approver = task_approver;
+	}
+
+	public String getPjtmain_id() {
+		return pjtmain_id;
+	}
+
+	public void setPjtmain_id(String pjtmain_id) {
+		this.pjtmain_id = pjtmain_id;
+	}
+
+	public LocalDateTime getStarted_on() {
+		return started_on;
+	}
+
+	public void setStarted_on(LocalDateTime started_on) {
+		this.started_on = started_on;
+	}
+
+	public String getApprover_name() {
+		return approver_name;
+	}
+
+	public void setApprover_name(String approver_name) {
+		this.approver_name = approver_name;
+	}
+
+	public byte[] getManagerFile() {
+		return managerFile;
+	}
+
+	public void setManagerFile(byte[] managerFile) {
+		this.managerFile = managerFile;
+	}
+
+	public byte[] getApproverFile() {
+		return approverFile;
+	}
+
+	public void setApproverFile(byte[] approverFile) {
+		this.approverFile = approverFile;
+	}
+
+	public String getTotaltasks() {
+		return totaltasks;
+	}
+
+	public void setTotaltasks(String totaltasks) {
+		this.totaltasks = totaltasks;
+	}
+
+	public String getClosedtasks() {
+		return closedtasks;
+	}
+
+	public void setClosedtasks(String closedtasks) {
+		this.closedtasks = closedtasks;
+	}
+
+	public String getPendingtasks() {
+		return pendingtasks;
+	}
+
+	public void setPendingtasks(String pendingtasks) {
+		this.pendingtasks = pendingtasks;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
 	
-    
 }

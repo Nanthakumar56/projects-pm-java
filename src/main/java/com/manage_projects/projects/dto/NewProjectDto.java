@@ -18,7 +18,7 @@ public class NewProjectDto {
     private String task_supervisor;
     private String pjtmain_id;
     private List<String> userIds; 
-    private List<MileStones> milestones;
+    private List<MilestoneDto> milestones;
 	
     public NewProjectDto() {
 		super();
@@ -26,7 +26,7 @@ public class NewProjectDto {
 
 	public NewProjectDto(String projectid,String title, String description, LocalDateTime startdate, LocalDateTime duedate,
 			String status,String reason, String project_manager, String priority, String task_supervisor, String pjtmain_id,
-			List<String> userIds, List<MileStones> milestones) {
+			List<String> userIds, List<MilestoneDto> milestones) {
 		super();
 		this.projectid = projectid;
 		this.title = title;
@@ -131,11 +131,11 @@ public class NewProjectDto {
 		this.userIds = userIds;
 	}
 
-	public List<MileStones> getMilestones() {
+	public List<MilestoneDto> getMilestones() {
 		return milestones;
 	}
 
-	public void setMilestones(List<MileStones> milestones) {
+	public void setMilestones(List<MilestoneDto> milestones) {
 		this.milestones = milestones;
 	}
 

@@ -49,6 +49,13 @@ public class ProjectsController {
         List<ProjectDto> projectDTOList = projectService.getAllProjects();
         return ResponseEntity.status(HttpStatus.OK).body(projectDTOList);
 	}
+	
+	@GetMapping("/userProjects")
+    public ResponseEntity<List<ProjectDto>> getProjectsByUserId(@RequestParam String userId) {
+        List<ProjectDto> projects = projectService.getProjectsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(projects);
+    }
+	
 	@GetMapping("/project")
 	public ResponseEntity<ProjectDto> getProject(@RequestParam String projectId)
 	{

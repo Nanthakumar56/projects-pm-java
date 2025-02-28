@@ -1,19 +1,9 @@
-package com.manage_projects.projects.entity;
+package com.manage_projects.projects.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name="milestones")
-public class MileStones {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+public class MilestoneDto {
 	private String milestoneid;
 	private String name;
 	private String description;
@@ -26,13 +16,15 @@ public class MileStones {
 	private LocalDateTime updated_at;
 	private int step;
 	private String reason;
+	private List<ModuleDto> modules;
 	
-	public MileStones() {
+	public MilestoneDto() {
 		super();
 	}
-	public MileStones(String milestoneid, String name, String description, LocalDateTime start_date,
+
+	public MilestoneDto(String milestoneid, String name, String description, LocalDateTime start_date,
 			LocalDateTime target_date, LocalDateTime due_date, String projectid, String status, LocalDateTime created_at,
-			LocalDateTime updated_at, int step, String reason) {
+			LocalDateTime updated_at, int step, String reason, List<ModuleDto> modules) {
 		super();
 		this.milestoneid = milestoneid;
 		this.name = name;
@@ -46,77 +38,111 @@ public class MileStones {
 		this.updated_at = updated_at;
 		this.step = step;
 		this.reason = reason;
-				}
-	public String getReason() {
-		return reason;
+		this.modules = modules;
 	}
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
+
 	public String getMilestoneid() {
 		return milestoneid;
 	}
+
 	public void setMilestoneid(String milestoneid) {
 		this.milestoneid = milestoneid;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public LocalDateTime getStart_date() {
 		return start_date;
 	}
+
 	public void setStart_date(LocalDateTime start_date) {
 		this.start_date = start_date;
 	}
+
 	public LocalDateTime getTarget_date() {
 		return target_date;
 	}
+
 	public void setTarget_date(LocalDateTime target_date) {
 		this.target_date = target_date;
 	}
+
 	public String getProjectid() {
 		return projectid;
 	}
+
 	public void setProjectid(String projectid) {
 		this.projectid = projectid;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
 	public LocalDateTime getCreated_at() {
 		return created_at;
 	}
+
 	public void setCreated_at(LocalDateTime created_at) {
 		this.created_at = created_at;
 	}
+
 	public LocalDateTime getUpdated_at() {
 		return updated_at;
 	}
+
 	public void setUpdated_at(LocalDateTime updated_at) {
 		this.updated_at = updated_at;
 	}
+
 	public int getStep() {
 		return step;
 	}
+
 	public void setStep(int step) {
 		this.step = step;
 	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public List<ModuleDto> getModules() {
+		return modules;
+	}
+
+	public void setModules(List<ModuleDto> modules) {
+		this.modules = modules;
+	}
+
 	public LocalDateTime getDue_date() {
 		return due_date;
 	}
+
 	public void setDue_date(LocalDateTime due_date) {
 		this.due_date = due_date;
 	}
+	
 }

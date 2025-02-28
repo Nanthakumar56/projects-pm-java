@@ -22,4 +22,7 @@ public interface MembersRepository extends JpaRepository<Members, MembersId> {
 	 @Transactional
 	    @Query("DELETE FROM Members m WHERE m.id.projectid = :projectid")
 	    void deleteByProjectId(@Param("projectid") String projectid);
+
+	 @Query("SELECT m.id.projectid FROM Members m WHERE m.id.userid = :userId")
+	    List<String> findProjectIdsByUserId(@Param("userId") String userId);
 }

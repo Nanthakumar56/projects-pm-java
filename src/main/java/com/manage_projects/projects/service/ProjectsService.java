@@ -51,6 +51,9 @@ public class ProjectsService {
 	@Autowired
 	private MilestoneServie milestoneService;
 	
+	@Autowired
+    private RestTemplate restTemplate;
+	
 	public Projects createProject(NewProjectDto projectDTO) {
 		
 		Projects project = new Projects();	
@@ -65,6 +68,7 @@ public class ProjectsService {
 	    project.setProject_manager_id(projectDTO.getProject_manager());
 	    project.setTask_approver(projectDTO.getTask_supervisor());
 	    project.setPjtmain_id(projectDTO.getPjtmain_id());
+	    
 	    if(projectDTO.getStatus().equals("On Hold"))
 	    {
 	    	project.setReason(projectDTO.getReason());
@@ -77,7 +81,7 @@ public class ProjectsService {
             createMember(savedProject.getProjectid(), userId);
         }
         
-        milestoneService.createMileStones(savedProject.getProjectid(),projectDTO.getMilestones());
+        milestoneService.createMilestones(savedProject.getProjectid(),projectDTO.getMilestones());
         
 		return savedProject;
 	}
@@ -148,6 +152,61 @@ public class ProjectsService {
 	    
 	    return projectDTOList;
 	}
+	
+	public List<ProjectDto> getProjectsByUserId(String userId) {
+        List<String> projectIds = membersRepo.findProjectIdsByUserId(userId);
+        List<Projects> projectList = projectsRepo.findAllById(projectIds);
+        List<ProjectDto> projectDTOList = new ArrayList<>();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        for (Projects project : projectList) {
+            ProjectDto projectdto = new ProjectDto();
+            projectdto.setProjectid(project.getProjectid());
+            projectdto.setProjectname(project.getProjectname());
+            projectdto.setProjectdescription(project.getProjectdescription());
+            projectdto.setStart_date(project.getStart_date());
+            projectdto.setEnd_date(project.getEnd_date());
+            projectdto.setCompleted_at(project.getCompleted_at());
+            projectdto.setStatus(project.getStatus());
+            projectdto.setCreated_at(project.getCreated_at());
+            projectdto.setUpdated_at(project.getUpdated_at());
+            projectdto.setPriority(project.getPriority());
+            projectdto.setProject_manager_id(project.getProject_manager_id());
+            projectdto.setTask_approver(project.getTask_approver());
+            projectdto.setPjtmain_id(project.getPjtmain_id());
+            projectdto.setIs_archived(project.getIs_archived());
+            projectdto.setStarted_on(project.getStarted_on());
+
+            // Fetch project manager name
+            String projectManagerId = project.getProject_manager_id();
+            String managerUrl = "http://localhost:5656/users/getName?userId=" + projectManagerId;
+            try {
+                ResponseEntity<String> response = restTemplate.getForEntity(managerUrl, String.class);
+                projectdto.setProject_manager(response.getStatusCode().is2xxSuccessful() ? response.getBody() : "Unknown");
+            } catch (Exception e) {
+                projectdto.setProject_manager("Unknown");
+            }
+
+            // Fetch approver name
+            String approverId = project.getTask_approver();
+            String approverUrl = "http://localhost:5656/users/getName?userId=" + approverId;
+            try {
+                ResponseEntity<String> response = restTemplate.getForEntity(approverUrl, String.class);
+                projectdto.setApprover_name(response.getStatusCode().is2xxSuccessful() ? response.getBody() : "Unknown");
+            } catch (Exception e) {
+                projectdto.setApprover_name("Unknown");
+            }
+
+            // Fetch users in the project
+            List<String> userIds = membersRepo.findUserIdsByProjectId(project.getProjectid());
+            projectdto.setUserIds(userIds);
+
+            projectDTOList.add(projectdto);
+        }
+
+        return projectDTOList;
+    }
 
 
 	public ProjectDto getProject(String projectid) {
@@ -335,31 +394,41 @@ public class ProjectsService {
 	        return false;
 	    }
 	}
-	@Transactional
-	public boolean deleteProject(String projectId) {
-	    try {
-	        // Call the external tasks deletion API
-	        RestTemplate restTemplate = new RestTemplate();
-	        String taskServiceUrl = "http://localhost:6262/tasks/deleteByProject?projectid=" + projectId;
-	        ResponseEntity<String> response = restTemplate.exchange(taskServiceUrl, HttpMethod.DELETE, null, String.class);
+	
+	 @Transactional
+	    public boolean deleteProject(String projectId) {
+	        try {
+	            // Check if project exists before proceeding
+	            if (!projectsRepo.existsById(projectId)) {
+	                return false;
+	            }
 
-	        if (!response.getStatusCode().is2xxSuccessful()) {
-	            return false; // If task deletion fails, stop the process
+	            // Call external task service to delete related tasks
+	            String taskServiceUrl = "http://localhost:6262/tasks/deleteByProject?projectid=" + projectId;
+	            ResponseEntity<String> response = restTemplate.exchange(taskServiceUrl, HttpMethod.DELETE, null, String.class);
+
+	            // Ensure the task deletion was successful
+	            if (!response.getStatusCode().is2xxSuccessful()) {
+	                return false;
+	            }
+
+	            // Delete related entities
+	            membersRepo.deleteByProjectId(projectId);
+	            documenentsRepo.deleteByProjectId(projectId);
+	            notesRepo.deleteByProjectId(projectId);
+	            milestoneService.deleteMilestonesByProjectId(projectId);
+
+	            // Delete the project itself
+	            projectsRepo.deleteById(projectId);
+
+	            return true;
+	        } catch (Exception e) {
+	            // Log the exception (optional: use a logger)
+	            System.err.println("Error deleting project: " + e.getMessage());
+	            return false;
 	        }
-
-	        // Proceed with deleting project-related entities
-	        membersRepo.deleteByProjectId(projectId);
-	        documenentsRepo.deleteByProjectId(projectId);
-	        notesRepo.deleteByProjectId(projectId);
-	        milestoneRepo.deleteByProjectId(projectId);
-	        projectsRepo.deleteById(projectId);
-
-	        return true;
-	    } catch (Exception e) {
-	        return false;
 	    }
-	}
-
+	 
 	public Members createMember(String projectid, String userid) {
         MembersId membersId = new MembersId(projectid, userid);
         Members member = new Members(membersId); 
